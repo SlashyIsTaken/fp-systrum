@@ -1,0 +1,7 @@
+services:
+  inventory:
+    build: .
+    image: demo/inventoryatest
+    ports:
+      - "8011:8011"
+    restart: unless-stopped

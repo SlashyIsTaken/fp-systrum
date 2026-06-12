@@ -1,0 +1,64 @@
+# Demo-shop annotation layer. Everything here is confidence: annotated and wins
+# over discovery. Business meaning, external systems, trust zones, corrections.
+
+domains:
+  storefront:   { label: "Storefront",       color: "#A78BFA" }
+  payments:     { label: "Payments",          color: "#3DD6D0" }
+  fulfillment:  { label: "Fulfillment",       color: "#60A5FA" }
+  platform:     { label: "Platform / Infra",  color: "#6B7280" }
+  data:         { label: "Data",              color: "#F59E0B" }
+  external:     { label: "External (not ours)", color: "#475569" }
+
+zones:
+  internet:  { label: "Internet" }
+  edge:      { label: "DMZ / Edge" }
+  internal:  { label: "Internal" }
+  data:      { label: "Data" }
+  external:  { label: "External (not ours)" }
+
+# Systems discovery sees only as URLs/hosts — give them identity.
+nodes:
+  - id: end-users
+    kind: external
+    name: "End Users"
+    domain: external
+    zone: internet
+  - id: stripe
+    kind: external
+    name: "Stripe"
+    domain: external
+    zone: external
+    meta: { vendor: "Stripe", note: "api.stripe.com" }
+  - id: legacy-erp
+    kind: external
+    name: "Legacy ERP"
+    domain: external
+    zone: external
+    meta: { protocol: "TCP" }
+
+# Map discovered nodes onto domains/zones + correct anything.
+assign:
+  storefront:     { domain: storefront,  zone: edge, internetFacing: true }
+  api-gateway:    { domain: platform,    zone: edge, internetFacing: true, label: "API Gateway" }
+  orders:         { domain: fulfillment, zone: internal }
+  inventory:      { domain: fulfillment, zone: internal }
+  billing:        { domain: payments,    zone: internal }
+  auth:           { domain: platform,    zone: internal }
+  payments-proxy: { domain: payments,    zone: edge }
+  legacy-bridge:  { domain: fulfillment, zone: internal }
+  postgres:       { domain: data,        zone: data }
+  redis:          { domain: data,        zone: data }
+  rabbitmq:       { domain: data,        zone: data }
+
+# Edges discovery can't infer (or whose nuance needs stating). Annotations win.
+edges:
+  - { source: end-users, target: storefront, protocol: http, auth: jwt,
+      note: "End users authenticate to the storefront" }
+  - { source: payments-proxy, target: stripe, protocol: http, auth: bearer-token,
+      note: "Proxy injects a self-managed token; downstream never sees it" }
+  - { source: legacy-bridge, target: legacy-erp, protocol: tcp, auth: device-id,
+      note: "Device-level credential; end-user auth enforced before the bridge" }
+
+links:
+  api-gateway:
+    - { label: "Repo", href: "https://github.com/flarepoint/demo-shop" }

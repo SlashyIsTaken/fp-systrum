@@ -1,0 +1,7 @@
+services:
+  auth:
+    build: .
+    image: demo/authatest
+    ports:
+      - "8013:8013"
+    restart: unless-stopped

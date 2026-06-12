@@ -1,0 +1,7 @@
+services:
+  billing:
+    build: .
+    image: demo/billingatest
+    ports:
+      - "8012:8012"
+    restart: unless-stopped

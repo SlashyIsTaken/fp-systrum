@@ -1,0 +1,7 @@
+services:
+  legacy-bridge:
+    build: .
+    image: demo/legacy-bridgeatest
+    ports:
+      - "8002:8002"
+    restart: unless-stopped

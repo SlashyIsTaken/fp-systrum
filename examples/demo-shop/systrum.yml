@@ -1,0 +1,40 @@
+# Demo-shop preset — the canonical public example + the basis for engine tests.
+# A small online-shop platform; nothing here is real.
+name: "Demo Shop"
+environment: production
+
+repos:
+  root: .                       # resolved relative to this file
+  include: ["services/*"]
+
+providers:
+  compose:
+    enabled: true
+  env:
+    enabled: true
+    # env var → target node id
+    targets:
+      GATEWAY_URL: api-gateway
+      ORDERS_URL: orders
+      BILLING_URL: billing
+      INVENTORY_URL: inventory
+      AUTH_URL: auth
+      PAYMENTS_PROXY_URL: payments-proxy
+      ERP_BRIDGE_URL: legacy-bridge
+      ERP_HOST: legacy-erp
+      STRIPE_API_BASE: stripe
+      DATABASE_DSN: postgres
+      REDIS_URL: redis
+      RABBITMQ_URL: rabbitmq
+    # env key name → auth mechanism (overrides the generic *_API_KEY → api-key rule)
+    auth_keys:
+      PROXY_API_KEY: proxy-key
+  annotations:
+    enabled: true
+
+annotations:
+  file: ./topology.yml
+
+ui:
+  theme: dark
+  default_overlays: [domain, confidence]

@@ -1,0 +1,7 @@
+services:
+  api-gateway:
+    build: .
+    image: demo/api-gatewayatest
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

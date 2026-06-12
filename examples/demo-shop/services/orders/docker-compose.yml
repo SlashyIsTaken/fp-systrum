@@ -1,0 +1,7 @@
+services:
+  orders:
+    build: .
+    image: demo/ordersatest
+    ports:
+      - "8010:8010"
+    restart: unless-stopped
