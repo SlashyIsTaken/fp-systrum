@@ -1,0 +1,39 @@
+# ── Private presets ─────────────────────────────────────────────
+# Real-environment presets that name internal hosts, vendors, or
+# security posture. The public repo ships only the demo preset.
+/presets/
+
+# ── Secrets / local config ──────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.local.yml
+
+# ── Python ──────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Node / Next.js ──────────────────────────────────────────────
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# ── Data / build artifacts ──────────────────────────────────────
+*.sqlite
+*.sqlite3
+*.db
+/data/
+
+# ── Editor / OS ─────────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.swp
