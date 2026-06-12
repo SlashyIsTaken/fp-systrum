@@ -1,0 +1,33 @@
+# One-command demo:  docker compose up --build
+# → web UI on http://localhost:3000, engine API on http://localhost:8000
+# Out of the box it discovers the committed examples/demo-shop stack.
+
+services:
+  engine:
+    build:
+      context: .
+      dockerfile: engine/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - systrum-data:/app/engine/data
+    # To map your own stack instead of the demo:
+    #   - mount your repos:        ./your-repos:/workspace:ro
+    #   - mount a preset config:   ./presets/my-stack:/preset:ro
+    #   - set SYSTRUM_CONFIG=/preset/systrum.yml
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE: http://localhost:8000
+    depends_on:
+      - engine
+    restart: unless-stopped
+
+volumes:
+  systrum-data:

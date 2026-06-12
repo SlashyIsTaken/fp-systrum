@@ -1,9 +1,9 @@
 /**
  * Systrum — normalized graph schema (shared contract)
  *
- * This is the single source of truth for what providers emit, what the engine
- * stores, and what the web app renders. Mirror it in Python (Pydantic) on the
- * engine side; this TS version is what the frontend imports.
+ * Documentation copy. The CANONICAL TypeScript contract the app imports lives at
+ * `web/src/lib/graph-schema.ts`; the engine mirrors it in `engine/systrum/model.py`.
+ * Keep all three in sync.
  */
 
 // ─── Enumerations ────────────────────────────────────────────────────────────
