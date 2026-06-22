@@ -7,6 +7,7 @@ import { COLORS, HEALTH_COLOR, techLabel } from "@/lib/style";
 export interface ServiceNodeData {
   node: GraphNode;
   dimmed?: boolean;
+  showHealth?: boolean;
 }
 
 const KIND_LABEL: Record<string, string> = {
@@ -17,11 +18,13 @@ const KIND_LABEL: Record<string, string> = {
 };
 
 export default function ServiceNode({ data }: { data: ServiceNodeData }) {
-  const { node, dimmed } = data;
+  const { node, dimmed, showHealth } = data;
   const isExternal = node.kind === "external" || Boolean(node.meta?._stub);
   const health = node.health?.status ?? "unknown";
   const ports = (node.meta?.ports as string[] | undefined) ?? [];
   const firstPort = ports[0]?.split(":")[0];
+
+  const borderColor = showHealth ? HEALTH_COLOR[health] : COLORS.border;
 
   return (
     <div
@@ -31,10 +34,12 @@ export default function ServiceNode({ data }: { data: ServiceNodeData }) {
         padding: "10px 12px",
         borderRadius: 12,
         background: isExternal ? "rgba(20,25,37,0.6)" : COLORS.surface,
-        border: `1px ${isExternal ? "dashed" : "solid"} ${COLORS.border}`,
-        boxShadow: "0 4px 14px rgba(0,0,0,0.35)",
+        border: `${showHealth ? 2 : 1}px ${isExternal ? "dashed" : "solid"} ${borderColor}`,
+        boxShadow: showHealth
+          ? `0 4px 14px rgba(0,0,0,0.35), 0 0 0 3px ${HEALTH_COLOR[health]}22`
+          : "0 4px 14px rgba(0,0,0,0.35)",
         opacity: dimmed ? 0.28 : 1,
-        transition: "opacity 160ms ease",
+        transition: "opacity 160ms ease, border-color 160ms ease, box-shadow 160ms ease",
         color: COLORS.text,
         fontSize: 13,
       }}

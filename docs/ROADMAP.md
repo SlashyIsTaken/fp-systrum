@@ -9,16 +9,16 @@ platform.
 **Goal:** point Systrum at a set of repos, get a generated, branded, accurate
 architecture diagram. No live data yet — purely from committed config.
 
-- [ ] Engine skeleton (FastAPI), provider interface, scheduler, graph store (SQLite)
-- [ ] **Compose provider** — containers, ports, images, tech inference
-- [ ] **Env-heuristic provider** — dependency edges + auth from env keys
-- [ ] **Annotation provider** + `topology.yml` (domains, external systems, zones)
-- [ ] Reconciliation core (merge + confidence) — no live escalation yet
-- [ ] Web app: Next.js + React Flow + elkjs auto-layout, dark theme
-- [ ] Custom node cards, domain group nodes, minimap, pan/zoom
-- [ ] Health/Confidence/Domain overlays (static values)
-- [ ] Present mode + PNG/SVG/Mermaid export
-- [ ] Demo-stack preset
+- [x] Engine skeleton (FastAPI), provider interface, scheduler, graph store (SQLite)
+- [x] **Compose provider** — containers, ports, images, tech inference
+- [x] **Env-heuristic provider** — dependency edges + auth from env keys
+- [x] **Annotation provider** + `topology.yml` (domains, external systems, zones)
+- [x] Reconciliation core (merge + confidence) — no live escalation yet
+- [x] Web app: Next.js + React Flow + elkjs auto-layout, dark theme
+- [x] Custom node cards, domain group nodes, minimap, pan/zoom
+- [x] Health/Confidence/Domain overlays (static values)
+- [x] Present mode + PNG/SVG/Mermaid export
+- [x] Demo-stack preset
 
 **Exit:** open the app, see a real topology, present it fullscreen. Export a
 diagram for a slide deck or README.

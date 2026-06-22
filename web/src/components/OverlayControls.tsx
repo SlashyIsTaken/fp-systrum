@@ -1,10 +1,12 @@
 "use client";
 
-import { COLORS } from "@/lib/style";
+import { COLORS, HEALTH_COLOR } from "@/lib/style";
+import type { ExportFormat } from "@/lib/export";
 
 export interface OverlayState {
   domain: boolean;
   confidence: boolean;
+  health: boolean;
 }
 
 interface Props {
@@ -12,6 +14,8 @@ interface Props {
   onToggle: (key: keyof OverlayState) => void;
   meta: { nodes: number; edges: number; providers: string[]; generatedAt?: string };
   onRescan: () => void;
+  onExport: (format: ExportFormat) => void;
+  onPresent: () => void;
   busy?: boolean;
 }
 
@@ -69,7 +73,15 @@ const Toggle = ({
   </button>
 );
 
-export default function OverlayControls({ state, onToggle, meta, onRescan, busy }: Props) {
+export default function OverlayControls({
+  state,
+  onToggle,
+  meta,
+  onRescan,
+  onExport,
+  onPresent,
+  busy,
+}: Props) {
   return (
     <div
       style={{
@@ -97,6 +109,7 @@ export default function OverlayControls({ state, onToggle, meta, onRescan, busy 
         </div>
         <Toggle label="Domain districts" on={state.domain} onClick={() => onToggle("domain")} />
         <Toggle label="Confidence (config vs live)" on={state.confidence} onClick={() => onToggle("confidence")} />
+        <Toggle label="Health" on={state.health} onClick={() => onToggle("health")} />
       </div>
 
       {state.confidence && (
@@ -104,6 +117,15 @@ export default function OverlayControls({ state, onToggle, meta, onRescan, busy 
           <LegendLine dash="" label="observed (live)" />
           <LegendLine dash="6 4" label="declared (config only)" />
           <LegendLine dash="1 5" label="annotated (by hand)" />
+        </div>
+      )}
+
+      {state.health && (
+        <div style={{ marginTop: 12, fontSize: 11, color: COLORS.muted, display: "flex", flexDirection: "column", gap: 5 }}>
+          <DotLine color={HEALTH_COLOR.healthy} label="healthy" />
+          <DotLine color={HEALTH_COLOR.degraded} label="degraded" />
+          <DotLine color={HEALTH_COLOR.down} label="down" />
+          <DotLine color={HEALTH_COLOR.unknown} label="unknown (no live data yet)" />
         </div>
       )}
 
@@ -131,6 +153,72 @@ export default function OverlayControls({ state, onToggle, meta, onRescan, busy 
       >
         {busy ? "Scanning…" : "Re-scan"}
       </button>
+
+      <div style={{ marginTop: 14, fontSize: 10, color: COLORS.muted, textTransform: "uppercase", letterSpacing: 0.5 }}>
+        Export
+      </div>
+      <div style={{ marginTop: 6, display: "flex", gap: 6 }}>
+        <ActionButton label="PNG" onClick={() => onExport("png")} />
+        <ActionButton label="SVG" onClick={() => onExport("svg")} />
+        <ActionButton label="Mermaid" onClick={() => onExport("mermaid")} />
+      </div>
+
+      <button
+        onClick={onPresent}
+        style={{
+          marginTop: 10,
+          width: "100%",
+          padding: "8px 10px",
+          borderRadius: 8,
+          border: `1px solid ${COLORS.border}`,
+          background: "transparent",
+          color: COLORS.text,
+          cursor: "pointer",
+          fontSize: 12,
+          fontWeight: 600,
+        }}
+      >
+        Present ⤢
+      </button>
+    </div>
+  );
+}
+
+function ActionButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        flex: 1,
+        padding: "7px 0",
+        borderRadius: 8,
+        border: `1px solid ${COLORS.border}`,
+        background: "transparent",
+        color: COLORS.muted,
+        cursor: "pointer",
+        fontSize: 11,
+        fontWeight: 600,
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function DotLine({ color, label }: { color: string; label: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <span
+        style={{
+          width: 9,
+          height: 9,
+          borderRadius: "50%",
+          background: color,
+          boxShadow: `0 0 6px ${color}`,
+          flex: "0 0 auto",
+        }}
+      />
+      {label}
     </div>
   );
 }
