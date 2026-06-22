@@ -27,12 +27,12 @@ diagram for a slide deck or README.
 
 **Goal:** the map becomes the running system, continuously.
 
-- [ ] **Docker provider** — live container state + health from the socket
-- [ ] **Prometheus provider** — `/health` + `/metrics` → node health, edge traffic
-- [ ] Confidence escalation (`declared` → `observed`), `lastSeen` plumbing
-- [ ] WebSocket diff push + UI live updates (animated)
-- [ ] Traffic overlay (edge thickness + flow particles), activity feed
-- [ ] Scheduler intervals per provider
+- [x] **Docker provider** — live container state + health from the socket
+- [x] **Prometheus provider** — `/health` + `/metrics` → node health, edge traffic
+- [x] Confidence escalation (`declared` → `observed`), `lastSeen` plumbing
+- [x] WebSocket diff push + UI live updates (animated)
+- [x] Traffic overlay (edge thickness + flow particles), activity feed
+- [x] Scheduler intervals per provider
 
 **Exit:** kill a container → its node goes red on screen within a poll cycle,
 with a line in the activity feed.

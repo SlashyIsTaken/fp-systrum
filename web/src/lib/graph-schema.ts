@@ -77,12 +77,20 @@ export interface Graph {
   providers?: string[];
 }
 
+// A change record lists only the fields that changed, as flat values
+// (e.g. { health: "down" } or { confidence: "observed" }).
+export interface FieldChange {
+  id: string;
+  before: Record<string, unknown>;
+  after: Record<string, unknown>;
+}
+
 export interface GraphDiff {
   at: string;
   nodesAdded: GraphNode[];
   nodesRemoved: string[];
-  nodesChanged: { id: string; before: Partial<GraphNode>; after: Partial<GraphNode> }[];
+  nodesChanged: FieldChange[];
   edgesAdded: GraphEdge[];
   edgesRemoved: string[];
-  edgesChanged: { id: string; before: Partial<GraphEdge>; after: Partial<GraphEdge> }[];
+  edgesChanged: FieldChange[];
 }

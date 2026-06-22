@@ -30,6 +30,8 @@ class Context:
     docker_socket: str | None
     http_targets: list[str]        # base URLs to poll
     config: dict                   # provider-specific settings from systrum.yml
+    current_graph: Graph | None    # last reconciled snapshot — live providers
+                                   #   overlay observations onto the known topology
 
 class Provider(Protocol):
     name: str
@@ -120,6 +122,29 @@ This is the strongest signal in the whole system: a registry row is the hub
 Loads `topology.yml`. Always wins on labels, domains, and layers, and can assert
 nodes/edges discovery can't infer — external systems, the human-readable domain
 names, trust zones. See [`CONFIG.md`](./CONFIG.md) for the schema.
+
+### 8. Simulation provider  · `live` · *dev / demo fixture*
+A synthetic stand-in for the real live providers, for when standing up an
+instrumented stack isn't practical — UI work, pipeline development, or a
+zero-dependency demo. It reads `ctx.current_graph` and overlays **`observed`
+health** (a coherent per-node random walk) and **edge `traffic`** onto the
+already-discovered topology, evolving it each cycle so the diff → WebSocket →
+activity-feed pipeline has real movement to push. It never alters topology —
+only enriches existing nodes/edges, which the reconciler escalates
+`declared → observed`.
+
+```yaml
+providers:
+  simulate:
+    enabled: true
+    seed: 7            # optional — reproducible flapping (omit for random)
+    flap: 0.2          # per-cycle probability a node changes health
+    force_down: [auth] # optional — pin these node ids to "down"
+```
+
+Disabled by default; the demo-shop preset turns it on so the map comes alive out
+of the box. When the real **Docker**/**Prometheus** providers are configured,
+disable `simulate` — they emit the same `observed` shape into the same pipeline.
 
 ## Reconciliation rules
 

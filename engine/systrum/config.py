@@ -29,6 +29,15 @@ class Config:
     def provider_config(self, name: str) -> dict[str, Any]:
         return self.providers.get(name, {})
 
+    @property
+    def has_live_provider(self) -> bool:
+        return self.provider_enabled("simulate") or self.provider_enabled("docker") or \
+            self.provider_enabled("prometheus")
+
+    @property
+    def scheduler_interval(self) -> int:
+        return int((self.raw.get("scheduler", {}) or {}).get("interval_s", 30))
+
 
 def load_config(path: str | os.PathLike[str]) -> Config:
     config_path = Path(path).expanduser().resolve()

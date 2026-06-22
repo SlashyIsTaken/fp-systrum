@@ -87,3 +87,38 @@ class GraphFragment(BaseModel):
     provider: str
     nodes: list[GraphNode] = Field(default_factory=list)
     edges: list[GraphEdge] = Field(default_factory=list)
+
+
+# ─── Diff (mirror graph-schema.ts GraphDiff) ────────────────────────────────
+
+
+class NodeChange(BaseModel):
+    id: str
+    before: dict[str, Any] = Field(default_factory=dict)
+    after: dict[str, Any] = Field(default_factory=dict)
+
+
+class EdgeChange(BaseModel):
+    id: str
+    before: dict[str, Any] = Field(default_factory=dict)
+    after: dict[str, Any] = Field(default_factory=dict)
+
+
+class GraphDiff(BaseModel):
+    at: str
+    nodesAdded: list[GraphNode] = Field(default_factory=list)
+    nodesRemoved: list[str] = Field(default_factory=list)
+    nodesChanged: list[NodeChange] = Field(default_factory=list)
+    edgesAdded: list[GraphEdge] = Field(default_factory=list)
+    edgesRemoved: list[str] = Field(default_factory=list)
+    edgesChanged: list[EdgeChange] = Field(default_factory=list)
+
+    def is_empty(self) -> bool:
+        return not (
+            self.nodesAdded
+            or self.nodesRemoved
+            or self.nodesChanged
+            or self.edgesAdded
+            or self.edgesRemoved
+            or self.edgesChanged
+        )

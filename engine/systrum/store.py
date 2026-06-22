@@ -38,9 +38,16 @@ class GraphStore:
             return int(cur.lastrowid)
 
     def latest(self) -> Graph | None:
+        return self._nth_latest(0)
+
+    def previous(self) -> Graph | None:
+        return self._nth_latest(1)
+
+    def _nth_latest(self, offset: int) -> Graph | None:
         with self._connect() as conn:
             row = conn.execute(
-                "SELECT graph_json FROM snapshots ORDER BY id DESC LIMIT 1"
+                "SELECT graph_json FROM snapshots ORDER BY id DESC LIMIT 1 OFFSET ?",
+                (offset,),
             ).fetchone()
         if not row:
             return None

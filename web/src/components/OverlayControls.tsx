@@ -7,6 +7,7 @@ export interface OverlayState {
   domain: boolean;
   confidence: boolean;
   health: boolean;
+  traffic: boolean;
 }
 
 interface Props {
@@ -110,6 +111,7 @@ export default function OverlayControls({
         <Toggle label="Domain districts" on={state.domain} onClick={() => onToggle("domain")} />
         <Toggle label="Confidence (config vs live)" on={state.confidence} onClick={() => onToggle("confidence")} />
         <Toggle label="Health" on={state.health} onClick={() => onToggle("health")} />
+        <Toggle label="Traffic (req/min)" on={state.traffic} onClick={() => onToggle("traffic")} />
       </div>
 
       {state.confidence && (

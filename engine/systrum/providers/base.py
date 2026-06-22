@@ -4,9 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 from ..model import GraphFragment
+
+if TYPE_CHECKING:
+    from ..model import Graph
 
 
 @dataclass
@@ -18,6 +21,9 @@ class Context:
     annotations_file: Path | None = None
     docker_socket: str | None = None
     http_targets: list[str] = field(default_factory=list)
+    # The most recent reconciled snapshot, so live providers (simulate, and
+    # later prometheus) can overlay observations onto the known topology.
+    current_graph: "Graph | None" = None
 
 
 @runtime_checkable

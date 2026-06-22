@@ -31,9 +31,36 @@ providers:
       PROXY_API_KEY: proxy-key
   annotations:
     enabled: true
+  # Synthetic live source (Phase 2) — overlays observed health + traffic onto
+  # the discovered topology and evolves it each cycle, so the live pipeline has
+  # real movement without a running stack. Swap for docker/prometheus later.
+  simulate:
+    enabled: true
+    seed: 7          # reproducible flapping; remove for fully random runs
+    flap: 0.2        # per-cycle probability a node changes health
+  # Real live providers (Phase 2). Disabled here — the demo uses `simulate` so it
+  # runs with no infrastructure. Against a real instrumented stack, disable
+  # `simulate` and enable these; each polls on its own `interval_s`.
+  docker:
+    enabled: false
+    socket: /var/run/docker.sock   # read-only; container state → observed health
+    interval_s: 5
+  prometheus:
+    enabled: false
+    interval_s: 15
+    targets:                        # node id → base URL scraped for /health + /metrics
+      - node: api-gateway
+        url: http://api-gateway:8000
+      - node: orders
+        url: http://orders:8000
 
 annotations:
   file: ./topology.yml
+
+# Fallback poll interval for any live provider that doesn't set its own
+# `interval_s` above (and how often diffs are pushed over the WebSocket).
+scheduler:
+  interval_s: 4
 
 ui:
   theme: dark
